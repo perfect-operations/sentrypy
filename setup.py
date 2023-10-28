@@ -9,7 +9,7 @@ setup(
     ],
     extras_require={
         "dev": [
-                "black",
+            "black",
             "jupyter",
         ]
     },
