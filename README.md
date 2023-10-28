@@ -48,6 +48,9 @@ IndexError: list index out of range
 WebDriverException: Message: unknown error: session deleted because of page crash
 AttributeError: 'NoneType' object has no attribute 'startswith'
 ```
+
+Do this and much more. Install and explore!
+
 ## Bonus
 This is an early stage project. Your ideas are welcome!
 
