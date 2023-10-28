@@ -1,4 +1,4 @@
-# `sentrypy` Quickstart
+# Quickstart
 
 [Sentry.io](https://sentry.io/) is an error tracking platform that helps you monitor and
 resolve issues in real-time.
@@ -10,13 +10,22 @@ the Sentry API to:
 - Automate incident responses
 - Integrate with your workflow
 
-## Prerequisites
-
-- Sentry API token →[official tutorial](https://docs.sentry.io/api/guides/create-auth-token/)
-
 ## Installation
 
-`pip install sentrypy`
+First create a sentry token ([official tutorial](https://docs.sentry.io/api/guides/create-auth-token/)).
+
+Then install by one of the options below.
+
+##### Installing from PyPI
+```
+pip install sentrypy
+```
+
+##### Installing from source
+```
+git clone git@github.com:perfect-operations/sentrypy.git
+pip install -e sentrypy
+```
 
 ## Usage
 
@@ -41,3 +50,5 @@ AttributeError: 'NoneType' object has no attribute 'startswith'
 ```
 ## Bonus
 This is an early stage project. Your ideas are welcome!
+
+Meet me [on Twitter](https://twitter.com/drpaulw)!
