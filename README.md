@@ -1,6 +1,6 @@
 # `sentrypy` Quickstart
 
-[Sentry](https://sentry.io/) is an error tracking platform that helps you monitor and
+[Sentry.io](https://sentry.io/) is an error tracking platform that helps you monitor and
 resolve issues in real-time.
 
 [sentrypy](https://github.com/perfect-operations/sentrypy) is a Python wrapper for
@@ -40,6 +40,4 @@ WebDriverException: Message: unknown error: session deleted because of page cras
 AttributeError: 'NoneType' object has no attribute 'startswith'
 ```
 ## Bonus
-This project is very early stage.
-
-Let me know what you think! 
+This is an early stage project. Your ideas are welcome!
