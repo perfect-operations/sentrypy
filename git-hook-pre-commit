@@ -1,0 +1,8 @@
+# Git pre-commit hook executed automatically before every commit
+# To activate create a symlink from .git/hooks to this file:
+#
+# cd .git/hooks && ln -s ../../git-pre-commit-hook pre-commit && cd -
+
+MAX_LINE_LENGTH=100
+
+black -q -l $MAX_LINE_LENGTH *.py **/*.py
