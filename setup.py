@@ -26,5 +26,5 @@ setup(
     project_urls={
         "Documentation": "https://sentrypy.readthedocs.io/en/latest/",
         "Source": "https://github.com/perfect-operations/sentrypy",
-    }
+    },
 )
