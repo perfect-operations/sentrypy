@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="sentrypy",
-    version="0.1.2",
+    version="0.1.3",
     author="Paul Weber",
     keywords="sentry api wrapper pythonic",
     description="The pythonic API wrapper for Sentry.io",
@@ -23,4 +23,8 @@ setup(
         ]
     },
     python_requires=">=3.8",
+    project_urls={
+        "Documentation": "https://sentrypy.readthedocs.io/en/latest/",
+        "Source": "https://github.com/perfect-operations/sentrypy",
+    }
 )
