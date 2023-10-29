@@ -17,6 +17,7 @@ setup(
         "dev": [
             "black",
             "jupyter",
+            "sphinx",
             "twine",
             "wheel",
         ]
