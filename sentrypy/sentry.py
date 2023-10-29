@@ -8,6 +8,7 @@ from .sentryrequesthandler import SentryRequestHandler, ResponseAttribute
 @dataclass
 class Sentry:
     """Top-level class to connect to the sentry.io API"""
+
     token: InitVar[str]
     handler: SentryRequestHandler = field(init=False)
 
