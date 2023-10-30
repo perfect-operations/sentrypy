@@ -4,10 +4,11 @@ jobs:
   check-black-passes:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - run: |
           echo $PWD
-          pwd
-          ls
+          echo "This is the `pwd`"
+          echo "This is inside `ls`"
           pip install black
           black --version
           black -l 120 --check .
