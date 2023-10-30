@@ -1,5 +1,5 @@
 name: black
-on: [push]
+on: [push, workflow_dispatch]
 jobs:
   check-black-passes:
     runs-on: ubuntu-latest
@@ -7,6 +7,7 @@ jobs:
         # You may pin to the exact commit or the version.
         # uses: jpetrucciani/black-check@47b8a1966b030f2d25ac53a51d91a7d8d764f478
       - run: echo $PWD
-      - run: echo `ls`
+      - run: pwd
+      - run: ls
       - run: pip install black
-      - run: black --check .
+      - run: black -l 120 --check .
