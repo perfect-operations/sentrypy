@@ -6,9 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          echo $PWD
-          echo "This is the `pwd`"
-          echo "This is inside `ls`"
           pip install black
           black --version
-          black -l 120 --check .
+          MAX_LINE_LENGTH=$(grep MAX_LINE_LENGTH= git-hook-pre-commit | cut -f 2 -d '=')
+          echo "Using MAX_LINE_LENGTH=$MAX_LINE_LENGTH"
+          black -l $MAX_LINE_LENGTH --check .
