@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="sentrypy",
-    version="0.1.3",
+    version="0.1.4",
     author="Paul Weber",
     keywords="sentry api wrapper pythonic",
     description="The pythonic API wrapper for Sentry.io",
