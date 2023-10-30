@@ -1,5 +1,7 @@
 # Quickstart
 
+[![Documentation Status](https://readthedocs.org/projects/sentrypy/badge/?version=latest)](https://sentrypy.readthedocs.io/en/latest/?badge=latest)
+
 [Sentry.io](https://sentry.io/) is an error tracking platform that helps you monitor and
 resolve issues in real-time.
 
