@@ -4,10 +4,10 @@ jobs:
   check-black-passes:
     runs-on: ubuntu-latest
     steps:
-        # You may pin to the exact commit or the version.
-        # uses: jpetrucciani/black-check@47b8a1966b030f2d25ac53a51d91a7d8d764f478
-      - run: echo $PWD
-      - run: pwd
-      - run: ls
-      - run: pip install black
-      - run: black -l 120 --check .
+      - run: |
+          echo $PWD
+          pwd
+          ls
+          pip install black
+          black --version
+          black -l 120 --check .
