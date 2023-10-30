@@ -2,7 +2,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/sentrypy/badge/?version=latest)](https://sentrypy.readthedocs.io/en/latest/?badge=latest)
 ![black passing](https://github.com/perfect-operations/sentrypy/actions/workflows/black.yml/badge.svg)
-![PyPi version](https://img.shields.io/pypi/v/sentrypy)
+![PyPI - Version](https://img.shields.io/pypi/v/sentrypy)
 ![PyPI - License](https://img.shields.io/pypi/l/sentrypy)
 
 [Sentry.io](https://sentry.io/) is an error tracking platform that helps you monitor and
