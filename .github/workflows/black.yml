@@ -7,6 +7,6 @@ jobs:
         # You may pin to the exact commit or the version.
         # uses: jpetrucciani/black-check@47b8a1966b030f2d25ac53a51d91a7d8d764f478
       - run: echo $PWD
-      - run: ls
+      - run: echo `ls`
       - run: pip install black
-      - run: black -l 120 *.py **/*.py
+      - run: black --check .
