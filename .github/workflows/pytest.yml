@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          pip install .
+          pip install -e .
           pip install pytest pytest-mock
           pip list
           pytest --pyargs sentrypy
