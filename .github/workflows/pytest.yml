@@ -1,0 +1,10 @@
+name: pytest
+on: [push, workflow_dispatch]
+jobs:
+  check-pytest-passes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          pip install pytest pytest-mock
+          pytest --pyargs sentrypy
