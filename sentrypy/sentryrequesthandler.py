@@ -33,8 +33,6 @@ class SentryRequestHandler:
             model: If response_attribute is JSON, which class to instantiate
             **kwargs: Additional arguments for model class constructor
         """
-        if params is None:
-            params = dict()
         response = requests.get(url=endpoint, headers=self.auth_headers, params=params)
         response.raise_for_status()
 

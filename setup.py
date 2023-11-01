@@ -18,6 +18,8 @@ setup(
         "dev": [
             "black",
             "jupyter",
+            "pytest",
+            "pytest-mock",
             "sphinx",
             "twine",
             "wheel",
