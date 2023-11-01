@@ -2,6 +2,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/sentrypy/badge/?version=latest)](https://sentrypy.readthedocs.io/en/latest/?badge=latest)
 ![black passing](https://github.com/perfect-operations/sentrypy/actions/workflows/black.yml/badge.svg)
+![pytest passing](https://github.com/perfect-operations/sentrypy/actions/workflows/pytest.yml/badge.svg)
 ![PyPI - Version](https://img.shields.io/pypi/v/sentrypy)
 ![PyPI - License](https://img.shields.io/pypi/l/sentrypy)
 

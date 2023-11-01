@@ -5,4 +5,4 @@
 
 MAX_LINE_LENGTH=100
 
-black -q -l $MAX_LINE_LENGTH *.py **/*.py
+black -q -l $MAX_LINE_LENGTH .
