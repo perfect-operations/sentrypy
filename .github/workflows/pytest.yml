@@ -8,5 +8,4 @@ jobs:
       - run: |
           pip install -e .
           pip install pytest pytest-mock
-          pip list
           pytest --pyargs sentrypy
