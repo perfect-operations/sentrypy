@@ -4,6 +4,7 @@ from sentrypy.sentryrequesthandler import SentryRequestHandler
 
 
 def test_get_request_call(mocker):
+    """Verify that ``requests.get`` is called with the right arguments"""
     token = "the_token"
     endpoint = "the_endpoint"
     params = {"param": "value"}

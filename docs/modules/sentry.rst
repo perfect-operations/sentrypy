@@ -4,4 +4,6 @@ Sentry
 ======
 
 .. automodule:: sentrypy.sentry
-   :members:
+    :members:
+    :special-members: __getitem__, __getattr__
+

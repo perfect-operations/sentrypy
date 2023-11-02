@@ -16,6 +16,7 @@ author = "Paul Weber"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
+    "enum_tools.autoenum",
 ]
 
 templates_path = ["_templates"]

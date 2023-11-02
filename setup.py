@@ -17,6 +17,7 @@ setup(
     extras_require={
         "dev": [
             "black",
+            "enum-tools[sphinx]",
             "jupyter",
             "pytest",
             "pytest-mock",

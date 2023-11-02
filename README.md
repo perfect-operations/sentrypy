@@ -57,7 +57,9 @@ AttributeError: 'NoneType' object has no attribute 'startswith'
 
 Do this and much more. Install and explore!
 
-## Bonus
-This is an early stage project. Your ideas are welcome!
+## Feature Requests & Issues
+Please let me know [here on GitHub](https://github.com/perfect-operations/sentrypy/issues)!
 
-Meet me [on Twitter](https://twitter.com/drpaulw)!
+## Support
+* Write me [on Twitter](https://twitter.com/drpaulw)
+* Write me [on LinkedIn](https://www.linkedin.com/in/drpaulw)
