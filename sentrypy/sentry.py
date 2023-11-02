@@ -52,7 +52,7 @@ class BaseModel:
         # via brackets, works always
         child_object["id"]
 
-    As ``BaseModel`` is inherited by all models, all children support this access styles.
+    As :class:`BaseModel` is inherited by all models, all children support this access styles.
     """
 
     sentry: Sentry
