@@ -7,26 +7,52 @@ from .sentryrequesthandler import SentryRequestHandler, ResponseAttribute
 
 @dataclass
 class Sentry:
-    """Top-level class to connect to the sentry.io API"""
+    """Top-level class to connect to the sentry.io API
 
-    token: InitVar[str]
+    Args:
+        token: Your Sentry API token
+    """
+
+    token: str
     handler: SentryRequestHandler = field(init=False)
 
-    def __post_init__(self, token):
-        self.handler = SentryRequestHandler(sentry=self, token=token)
+    def __post_init__(self):
+        self.handler = SentryRequestHandler(sentry=self, token=self.token)
 
     def organization(self, organization_slug: str) -> "Organization":
-        """Returns the specified organization"""
+        """Get the specified :class:`Organization`
+
+        Official API Docs:
+            `GET /api/0/organizations/{organization_slug}/ <https://docs.sentry.io/api/organizations/retrieve-an-organization/>`_
+        """
         endpoint = f"https://sentry.io/api/0/organizations/{organization_slug}/"
         return self.handler.get(endpoint, model=Organization)
 
     def project(self, organization_slug: str, project_slug: str) -> "Project":
-        """Returns the specified project"""
+        """Get the specified :class:`Project`
+
+        Official API Docs:
+            `GET /api/0/projects/{organization_slug}/{project_slug}/ <https://docs.sentry.io/api/projects/retrieve-a-project/>`_
+        """
         endpoint = f"https://sentry.io/api/0/projects/{organization_slug}/{project_slug}/"
         return self.handler.get(endpoint, model=Project)
 
     def projects(self) -> Iterator["Project"]:
-        """Returns an iterator over all projects"""
+        """Get an iterator over all :class:`Projects <Project>`
+
+        Example:
+
+            ::
+
+                from sentrypy.sentry import Sentry
+
+                sentry = Sentry(token=your_token)
+                for project in sentry.projects():
+                    print(project.name)
+
+        Official API Docs:
+            `GET /api/0/projects/ <https://docs.sentry.io/api/projects/list-your-projects>`_
+        """
         endpoint = "https://sentry.io/api/0/projects/"
         return self.handler.paginate_get(endpoint, model=Project)
 
