@@ -85,7 +85,11 @@ class BaseModel:
     """Reference to the corresponding :class:`Sentry` object which wraps the API access."""
 
     json: Dict
-    """Raw json data from API response for accessing even unimplemented attributes."""
+    """Raw json data from API response.
+    
+    Accessible via brackets ``[]`` and ``dot.access`` of object.
+    
+    For more information see :class:`BaseModel` documentation."""
 
     def __getitem__(self, key):
         """Implements bracket access to :attr:`json` as described in :class:`BaseModel`."""
