@@ -43,7 +43,7 @@ class Transceiver:
         }
         result = attr_mapper[response_attribute](response)
         if response_attribute == ResponseAttribute.JSON and model is not None:
-            return model(json=result, **kwargs)
+            return model(transceiver=self, json=result, **kwargs)
         else:
             return result
 
@@ -79,7 +79,7 @@ class Transceiver:
                 if model is None:
                     yield item
                 else:
-                    yield model(json=item, **kwargs)
+                    yield model(transceiver=self, json=item, **kwargs)
                 counter += 1
                 if max_results is not None and counter >= max_results:
                     return

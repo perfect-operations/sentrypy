@@ -29,7 +29,7 @@ class Sentry:
             `GET /api/0/organizations/{organization_slug}/ <https://docs.sentry.io/api/organizations/retrieve-an-organization/>`_
         """
         endpoint = f"https://sentry.io/api/0/organizations/{organization_slug}/"
-        return self.transceiver.get(endpoint, model=Organization, sentry=self)
+        return self.transceiver.get(endpoint, model=Organization)
 
     def project(self, organization_slug: str, project_slug: str) -> Project:
         """Get the specified :class:`Project`
@@ -38,7 +38,7 @@ class Sentry:
             `GET /api/0/projects/{organization_slug}/{project_slug}/ <https://docs.sentry.io/api/projects/retrieve-a-project/>`_
         """
         endpoint = f"https://sentry.io/api/0/projects/{organization_slug}/{project_slug}/"
-        return self.transceiver.get(endpoint, model=Project, sentry=self)
+        return self.transceiver.get(endpoint, model=Project)
 
     def projects(self) -> Iterator[Project]:
         """Get an iterator over all :class:`Projects <Project>`
@@ -57,4 +57,4 @@ class Sentry:
             `GET /api/0/projects/ <https://docs.sentry.io/api/projects/list-your-projects>`_
         """
         endpoint = "https://sentry.io/api/0/projects/"
-        return self.transceiver.paginate_get(endpoint, model=Project, sentry=self)
+        return self.transceiver.paginate_get(endpoint, model=Project)
