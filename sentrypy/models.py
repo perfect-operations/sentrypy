@@ -2,6 +2,8 @@ from dataclasses import dataclass, field, InitVar
 from typing import Any, Dict, Iterator, List, Optional, Union
 from enum import Enum
 
+from sentrypy.transceiver import Transceiver
+
 
 @dataclass
 class BaseModel:
@@ -27,8 +29,8 @@ class BaseModel:
     As :class:`BaseModel` is inherited by all models, all children support this access styles.
     """
 
-    sentry: "Sentry"
-    """Reference to the corresponding :class:`Sentry` object which wraps the API access."""
+    transceiver: Transceiver
+    """HTTP level API wrapper."""
 
     json: Dict
     """Raw json data from API response.
@@ -77,8 +79,8 @@ class Project(BaseModel):
 
     def issues(self) -> Iterator["Issue"]:
         endpoint = f"https://sentry.io/api/0/projects/{self.organization_slug}/{self.slug}/issues/"
-        return self.sentry.transceiver.paginate_get(
-            endpoint, model=Issue, sentry=self.sentry, organization_slug=self.organization_slug
+        return self.transceiver.paginate_get(
+            endpoint, model=Issue, organization_slug=self.organization_slug
         )
 
     def event_counts(self, resolution: Optional[EventResolution] = None) -> List:
@@ -93,7 +95,7 @@ class Project(BaseModel):
         params = dict()
         if resolution is not None:
             params["resolution"] = resolution.value
-        return self.sentry.transceiver.get(endpoint, params=params)
+        return self.transceiver.get(endpoint, params=params)
 
 
 @dataclass
@@ -102,7 +104,7 @@ class Issue(BaseModel):
 
     def events(self) -> Iterator["Event"]:
         endpoint = f"https://sentry.io/api/0/organizations/{self.organization_slug}/issues/{self.id}/events/"
-        return self.sentry.transceiver.paginate_get(endpoint, model=Event)
+        return self.transceiver.paginate_get(endpoint, model=Event)
 
 
 @dataclass
