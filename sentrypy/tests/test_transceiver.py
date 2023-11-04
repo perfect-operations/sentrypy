@@ -1,6 +1,6 @@
 import requests
 
-from sentrypy.sentryrequesthandler import SentryRequestHandler
+from sentrypy.transceiver import Transceiver
 
 
 def test_get_request_call(mocker):
@@ -11,6 +11,6 @@ def test_get_request_call(mocker):
     expected_header = {"Authorization": f"Bearer {token}"}
 
     mocker.patch("requests.get")
-    handler = SentryRequestHandler(sentry=None, token=token)
+    handler = Transceiver(token=token)
     handler.get(endpoint, params=params)
     requests.get.assert_called_with(url=endpoint, headers=expected_header, params=params)

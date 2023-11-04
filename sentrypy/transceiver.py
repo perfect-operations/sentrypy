@@ -1,14 +1,13 @@
 import requests
 from enum import Enum
 from dataclasses import dataclass
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 ResponseAttribute = Enum("ResponseContent", ["ALL", "JSON", "HEADERS"])
 
 
 @dataclass
-class SentryRequestHandler:
-    sentry: "Sentry"
+class Transceiver:
     token: str
 
     @property
@@ -44,7 +43,7 @@ class SentryRequestHandler:
         }
         result = attr_mapper[response_attribute](response)
         if response_attribute == ResponseAttribute.JSON and model is not None:
-            return model(sentry=self.sentry, json=result, **kwargs)
+            return model(json=result, **kwargs)
         else:
             return result
 
@@ -80,7 +79,7 @@ class SentryRequestHandler:
                 if model is None:
                     yield item
                 else:
-                    yield model(sentry=self.sentry, json=item, **kwargs)
+                    yield model(json=item, **kwargs)
                 counter += 1
                 if max_results is not None and counter >= max_results:
                     return
