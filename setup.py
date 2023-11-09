@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="sentrypy",
-    version="0.1.4",
+    version="0.1.5",
     author="Paul Weber",
     keywords="sentry api wrapper pythonic",
     description="The pythonic API wrapper for Sentry.io",
@@ -22,6 +22,7 @@ setup(
             "pytest",
             "pytest-mock",
             "sphinx",
+            "sphinx-rtd-theme",
             "twine",
             "wheel",
         ]
