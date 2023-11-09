@@ -97,6 +97,18 @@ class Project(BaseModel):
             params["resolution"] = resolution.value
         return self.transceiver.get(endpoint, params=params)
 
+    def tag_values(self, key: str) -> List[Dict]:
+        """Get a list of all used values of given tag
+
+        Args:
+            key (str): The tag name to look up
+
+        Official API Docs:
+            `f"GET /api/0/projects/{organization_slug}/{project_slug}/tags/{key}/values/ <https://docs.sentry.io/api/projects/list-a-tags-values/>`_
+        """
+        endpoint = f"https://sentry.io/api/0/projects/{self.organization_slug}/{self.slug}/tags/{key}/values/"
+        return self.transceiver.get(endpoint)
+
 
 @dataclass
 class Issue(BaseModel):
