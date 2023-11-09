@@ -7,5 +7,6 @@ Reference
    :maxdepth: 2
    :caption: Contents:
 
+   modules/models
    modules/sentry
-   modules/sentryrequesthandler
+   modules/transceiver
