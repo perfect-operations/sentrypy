@@ -104,7 +104,7 @@ class Project(BaseModel):
             key (str): The tag name to look up
 
         Official API Docs:
-            `f"GET /api/0/projects/{organization_slug}/{project_slug}/tags/{key}/values/ <https://docs.sentry.io/api/projects/list-a-tags-values/>`_
+            `GET /api/0/projects/{organization_slug}/{project_slug}/tags/{key}/values/ <https://docs.sentry.io/api/projects/list-a-tags-values/>`_
         """
         endpoint = f"https://sentry.io/api/0/projects/{self.organization_slug}/{self.slug}/tags/{key}/values/"
         return self.transceiver.get(endpoint)
