@@ -58,7 +58,21 @@ class BaseModel:
 
 @dataclass
 class Organization(BaseModel):
-    pass
+    def teams(self) -> Iterator["Team"]:
+        """Get an iterator over all :class:`Teams <Team>`
+
+        Official API Docs:
+            `GET /api/0/organizations/{organization_slug}/teams/ <https://docs.sentry.io/api/teams/list-an-organizations-teams/>`_
+        """
+        endpoint = f"https://sentry.io/api/0/organizations/{self.slug}/teams/"
+        return self.transceiver.paginate_get(
+            endpoint, model=Team, organization_slug=self.slug
+        )
+
+
+@dataclass
+class Team(BaseModel):
+    organization_slug: str
 
 
 @dataclass
