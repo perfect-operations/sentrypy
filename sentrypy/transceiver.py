@@ -84,13 +84,39 @@ class Transceiver:
                 if max_results is not None and counter >= max_results:
                     return
 
-    def post(self, endpoint: str, *, data: Optional[Dict] = None, model: Optional[type] = None, **kwargs):
+    def post(
+        self, endpoint: str, *, data: Optional[Dict] = None,
+        response_attribute: Optional[ResponseAttribute] = ResponseAttribute.JSON, model: Optional[type] = None, **kwargs
+    ):
+        """Perform authenticated post request and return selected attribute of HTTP response
+
+        Args:
+            endpoint: Where to send the get request
+            data: Body parameter / payload to send to endpoint
+            response_attribute: Which part of the HTTP response to return
+            model: If response_attribute is JSON, which class to instantiate
+            **kwargs: Additional arguments for model class constructor
+        """
         response = requests.post(url=endpoint, headers=self.auth_headers, data=data)
         response.raise_for_status()
-        if model is not None:
-            return model(transceiver=self, json=response.json(), **kwargs)
+
+        # Return only parts of response that have been selected by response_attribute
+        attr_mapper = {
+            ResponseAttribute.ALL: lambda x: x,
+            ResponseAttribute.JSON: lambda x: x.json(),
+            ResponseAttribute.HEADERS: lambda x: x.headers,
+        }
+        result = attr_mapper[response_attribute](response)
+        if response_attribute == ResponseAttribute.JSON and model is not None:
+            return model(transceiver=self, json=result, **kwargs)
         else:
-            return response
+            return result
+
+    def delete(self, endpoint: str):
+        """Perform authenticated delete request and return HTTP response"""
+        response = requests.delete(url=endpoint, headers=self.auth_headers)
+        response.raise_for_status()
+        return response
 
 
 @dataclass

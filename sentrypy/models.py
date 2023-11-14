@@ -58,6 +58,15 @@ class BaseModel:
 
 @dataclass
 class Organization(BaseModel):
+    def project(self, project_slug: str) -> "Project":
+        """Get the specified :class:`Project`
+
+        Official API Docs:
+            `GET /api/0/projects/{organization_slug}/{project_slug}/ <https://docs.sentry.io/api/projects/retrieve-a-project/>`_
+        """
+        endpoint = f"https://sentry.io/api/0/projects/{self.slug}/{project_slug}/"
+        return self.transceiver.get(endpoint, model=Project)
+
     def teams(self) -> Iterator["Team"]:
         """Get an iterator over all :class:`Teams <Team>`
 
@@ -67,17 +76,41 @@ class Organization(BaseModel):
         endpoint = f"https://sentry.io/api/0/organizations/{self.slug}/teams/"
         return self.transceiver.paginate_get(endpoint, model=Team, organization_slug=self.slug)
 
+    def team(self, team_slug: str) -> "Team":
+        """Get the specified :class:`Team`
+
+        Official API Docs:
+            `GET /api/0/teams/{organization_slug}/{team_slug}/ <https://docs.sentry.io/api/teams/retrieve-a-team/>`_
+        """
+        endpoint = f"https://sentry.io/api/0/teams/{self.slug}/{team_slug}/"
+        return self.transceiver.get(endpoint, model=Team, organization_slug=self.slug)
+
     def create_team(self, team_slug: str) -> "Team":
-        """POST /api/0/organizations/{organization_slug}/teams/"""
+        """Create an instance of :class:`Team`, send it to API, and return it
+
+        Args:
+            team_slug (str): The slug to assign to the team
+
+        Official API Docs:
+            `POST /api/0/organizations/{organization_slug}/teams/ <https://docs.sentry.io/api/teams/create-a-new-team/>`_
+        """
         endpoint = f"https://sentry.io/api/0/organizations/{self.slug}/teams/"
         data = {"slug": team_slug}
         return self.transceiver.post(endpoint, data=data, model=Team, organization_slug=self.slug)
 
 
-
 @dataclass
 class Team(BaseModel):
     organization_slug: str
+
+    def delete(self):
+        """Mark :class:`Team` for deletion
+
+        Official API Docs:
+            `DELETE /api/0/teams/{organization_slug}/{team_slug}/ <https://docs.sentry.io/api/teams/delete-a-team/>`_
+        """
+        endpoint = f"https://sentry.io/api/0/teams/{self.organization_slug}/{self.slug}/"
+        return self.transceiver.delete(endpoint)
 
 
 @dataclass
