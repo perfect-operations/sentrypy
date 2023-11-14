@@ -65,9 +65,14 @@ class Organization(BaseModel):
             `GET /api/0/organizations/{organization_slug}/teams/ <https://docs.sentry.io/api/teams/list-an-organizations-teams/>`_
         """
         endpoint = f"https://sentry.io/api/0/organizations/{self.slug}/teams/"
-        return self.transceiver.paginate_get(
-            endpoint, model=Team, organization_slug=self.slug
-        )
+        return self.transceiver.paginate_get(endpoint, model=Team, organization_slug=self.slug)
+
+    def create_team(self, team_slug: str) -> "Team":
+        """POST /api/0/organizations/{organization_slug}/teams/"""
+        endpoint = f"https://sentry.io/api/0/organizations/{self.slug}/teams/"
+        data = {"slug": team_slug}
+        return self.transceiver.post(endpoint, data=data, model=Team, organization_slug=self.slug)
+
 
 
 @dataclass

@@ -84,6 +84,14 @@ class Transceiver:
                 if max_results is not None and counter >= max_results:
                     return
 
+    def post(self, endpoint: str, *, data: Optional[Dict] = None, model: Optional[type] = None, **kwargs):
+        response = requests.post(url=endpoint, headers=self.auth_headers, data=data)
+        response.raise_for_status()
+        if model is not None:
+            return model(transceiver=self, json=response.json(), **kwargs)
+        else:
+            return response
+
 
 @dataclass
 class PaginationLink:
