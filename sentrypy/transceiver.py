@@ -85,8 +85,13 @@ class Transceiver:
                     return
 
     def post(
-        self, endpoint: str, *, data: Optional[Dict] = None,
-        response_attribute: Optional[ResponseAttribute] = ResponseAttribute.JSON, model: Optional[type] = None, **kwargs
+        self,
+        endpoint: str,
+        *,
+        data: Optional[Dict] = None,
+        response_attribute: Optional[ResponseAttribute] = ResponseAttribute.JSON,
+        model: Optional[type] = None,
+        **kwargs,
     ):
         """Perform authenticated post request and return selected attribute of HTTP response
 
