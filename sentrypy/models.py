@@ -98,6 +98,30 @@ class Organization(BaseModel):
         data = {"slug": team_slug}
         return self.transceiver.post(endpoint, data=data, model=Team, organization_slug=self.slug)
 
+    def integrations(
+        self, provider_key: Optional[str] = None, features: Optional[List[str]] = None
+    ) -> Iterator["Integration"]:
+        """Get an iterator over all the available :class:`Integrations <Integration>` for an :class:`Organization`
+
+        Args:
+            provider_key (str): Specific integration provider to filter by such as slack.
+            features (List[str]): Integration features to filter by.
+
+        Official API Docs:
+            `GET  /api/0/organizations/{organization_slug}/integrations/ <https://docs.sentry.io/api/integrations/list-an-organizations-available-integrations/>`_
+        """
+        endpoint = f"https://sentry.io/api/0/organizations/{self.slug}/integrations/"
+        print(endpoint)
+
+        params_map = {"providerKey": provider_key, "features": features}
+        params = {key: value for key, value in params_map.items() if value is not None}
+        return self.transceiver.paginate_get(endpoint, params=params, model=Integration)
+
+
+@dataclass
+class Integration(BaseModel):
+    pass
+
 
 @dataclass
 class Team(BaseModel):
