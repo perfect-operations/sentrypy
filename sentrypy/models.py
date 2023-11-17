@@ -98,6 +98,18 @@ class Organization(BaseModel):
         data = {"slug": team_slug}
         return self.transceiver.post(endpoint, data=data, model=Team, organization_slug=self.slug)
 
+    def issue(self, id: str) -> "Issue":
+        """Get the specified :class:`Issue`
+
+        Args:
+            id (str): The ID of the issue to retrieve.
+
+        Official API Docs:
+            `GET /api/0/organizations/{organization_slug}/issues/{issue_id}/ <https://docs.sentry.io/api/events/retrieve-an-issue/>`_
+        """
+        endpoint = f"https://sentry.io/api/0/organizations/{self.slug}/issues/{id}/"
+        return self.transceiver.get(endpoint, model=Issue, organization_slug=self.slug)
+
     def integrations(
         self, provider_key: Optional[str] = None, features: Optional[List[str]] = None
     ) -> Iterator["Integration"]:
@@ -153,10 +165,21 @@ class Project(BaseModel):
     def organization_slug(self):
         return self.organization["slug"]
 
-    def issues(self) -> Iterator["Issue"]:
+    def issues(self, query: Optional[str] = "unresolved") -> Iterator["Issue"]:
+        """Get an iterator of all specified :class:`Issues <Issue>` in the :class:`Project`
+
+        Args:
+            query (Optional[str]):
+                An optional Sentry structured search query. If explicitly set to ``None``, an implied ``unresolved`` is assumed.
+
+        Official API Docs:
+            `GET /api/0/projects/{organization_slug}/{project_slug}/issues/ <https://docs.sentry.io/api/events/list-a-projects-issues/>`_
+        """
         endpoint = f"https://sentry.io/api/0/projects/{self.organization_slug}/{self.slug}/issues/"
+        params_map = {"query": "" if query is None else f"is:{query}"}
+        params = {key: value for key, value in params_map.items() if value is not None}
         return self.transceiver.paginate_get(
-            endpoint, model=Issue, organization_slug=self.organization_slug
+            endpoint, params=params, model=Issue, organization_slug=self.organization_slug
         )
 
     def event_counts(self, resolution: Optional[EventResolution] = None) -> List:
@@ -185,6 +208,73 @@ class Project(BaseModel):
         endpoint = f"https://sentry.io/api/0/projects/{self.organization_slug}/{self.slug}/tags/{key}/values/"
         return self.transceiver.get(endpoint)
 
+    def update_issues(
+        self,
+        *,
+        by_id: Optional[Union[int, List[int]]] = None,
+        by_status: Optional[str] = None,
+        status: Optional[str] = None,
+        status_details: Optional[str] = None,
+        ignore_duration: Optional[int] = None,
+        is_public: Optional[bool] = None,
+        merge: Optional[bool] = None,
+        assigned_to: Optional[str] = None,
+        has_seen: Optional[bool] = None,
+        is_bookmarked: Optional[bool] = None,
+    ) -> List:
+        """Bulk mutate various attributes on issues.
+
+        If any IDs are out of scope this operation will succeed without any data mutation.
+
+        Args:
+            by_id (Optional[Union[int, List[int]]]):
+                A single ID or a list of IDs of the issues to be mutated. It is optional only
+                if a status is mutated in which case an implicit update all is assumed.
+            by_status (Optional[str]):
+                Optionally limits the query to issues of the specified status. Valid values
+                are ``resolved``, ``reprocessing``, ``unresolved``, and ``ignored``.
+            status (str):
+                The new status for the issues. Valid values are ``resolved``,
+                ``resolvedInNextRelease``, ``unresolved``, and ``ignored``.
+            status_details (object):
+                Additional details about the resolution. Valid values are ``inRelease``,
+                ``inNextRelease``, ``inCommit``, ``ignoreDuration``, ``ignoreCount``,
+                ``ignoreWindow``, ``ignoreUserCount``, and ``ignoreUserWindow``.
+            ignore_duration (int):
+                The number of minutes to ignore this issue.
+            is_public (bool):
+                Sets the issue to public or private.
+            merge (bool):
+                Allows to merge or unmerge different issues.
+            assigned_to (str):
+                The actor ID (or username) of the user or team that should be assigned to this issue.
+            has_seen (bool):
+                In case this API call is invoked with a user context this allows changing of the
+                flag that indicates if the user has seen the event.
+            is_bookmarked (bool):
+                In case this API call is invoked with a user context this allows changing of the bookmark flag.
+
+        Official API Docs:
+            `PUT /api/0/projects/{organization_slug}/{project_slug}/issues/ <https://docs.sentry.io/api/events/bulk-mutate-a-list-of-issues/>`_
+        """
+        endpoint = f"https://sentry.io/api/0/projects/{self.organization_slug}/{self.slug}/issues/"
+
+        # How to use the same parameter multiple times: https://stackoverflow.com/a/23384253
+        params_map = {"id": by_id, "status": by_status}
+        params = {key: value for key, value in params_map.items() if value is not None}
+        data_map = {
+            "status": status,
+            "statusDetails": status_details,
+            "ignoreDuration": ignore_duration,
+            "isPublic": is_public,
+            "merge": merge,
+            "assignedTo": assigned_to,
+            "hasSeen": has_seen,
+            "isBookmarked": is_bookmarked,
+        }
+        data = {key: value for key, value in data_map.items() if value is not None}
+        return self.transceiver.put(endpoint, params=params, data=data)
+
 
 @dataclass
 class Issue(BaseModel):
@@ -193,6 +283,58 @@ class Issue(BaseModel):
     def events(self) -> Iterator["Event"]:
         endpoint = f"https://sentry.io/api/0/organizations/{self.organization_slug}/issues/{self.id}/events/"
         return self.transceiver.paginate_get(endpoint, model=Event)
+
+    def update(
+        self,
+        *,
+        status: Optional[str] = None,
+        assigned_to: Optional[str] = None,
+        has_seen: Optional[bool] = None,
+        is_bookmarked: Optional[bool] = None,
+        is_subscribed: Optional[bool] = None,
+        is_public: Optional[bool] = None,
+    ) -> "Issue":
+        """Updates an individual issue's attributes.
+
+        Only the attributes submitted are modified.
+
+        Args:
+            status (str):
+                The new status for the issues. Valid values are ``resolved``,
+                ``reprocessing``, ``unresolved``, and ``ignored``.
+            assigned_to (str):
+                The actor id (or username) of the user or team that should be assigned to this issue.
+            has_seen (bool):
+                In case this API call is invoked with a user context this allows changing of
+                the flag that indicates if the user has seen the event.
+            is_bookmarked (bool):
+                In case this API call is invoked with a user context this allows changing
+                of the bookmark flag.
+            is_subscribed (bool):
+                In case this API call is invoked with a user context this allows the user
+                to subscribe to workflow notifications for this issue.
+            is_public (bool):
+                Sets the issue to public or private.
+
+        Official API Docs:
+            `PUT /api/0/organizations/{self.organization_slug}/issues/{self.id}/ <https://docs.sentry.io/api/events/update-an-issue/>`_
+        """
+        data_map = {
+            "status": status,
+            "assignedTo": assigned_to,
+            "hasSeen": has_seen,
+            "isBookmarked": is_bookmarked,
+            "isSubscribed": is_subscribed,
+            "isPublic": is_public,
+        }
+        data = {key: value for key, value in data_map.items() if value is not None}
+
+        endpoint = (
+            f"https://sentry.io/api/0/organizations/{self.organization_slug}/issues/{self.id}/"
+        )
+        return self.transceiver.put(
+            endpoint, data=data, model=Issue, organization_slug=self.organization_slug
+        )
 
 
 @dataclass

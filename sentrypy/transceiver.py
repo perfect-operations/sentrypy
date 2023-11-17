@@ -60,7 +60,7 @@ class Transceiver:
 
         Args:
             endpoint: The URL to send a get request to
-            params: Parameters to add to endpoint
+            params: Parameters to append to endpoint url
             model: Instantiates objects from this class
             max_results: Return no more objects, unlimited by default
             **kwargs: Additional arguments for model class constructor
@@ -103,6 +103,41 @@ class Transceiver:
             **kwargs: Additional arguments for model class constructor
         """
         response = requests.post(url=endpoint, headers=self.auth_headers, data=data)
+        response.raise_for_status()
+
+        # Return only parts of response that have been selected by response_attribute
+        attr_mapper = {
+            ResponseAttribute.ALL: lambda x: x,
+            ResponseAttribute.JSON: lambda x: x.json(),
+            ResponseAttribute.HEADERS: lambda x: x.headers,
+        }
+        result = attr_mapper[response_attribute](response)
+        if response_attribute == ResponseAttribute.JSON and model is not None:
+            return model(transceiver=self, json=result, **kwargs)
+        else:
+            return result
+
+    def put(
+        self,
+        endpoint: str,
+        *,
+        params: Optional[Dict] = None,
+        data: Optional[Dict] = None,
+        response_attribute: Optional[ResponseAttribute] = ResponseAttribute.JSON,
+        model: Optional[type] = None,
+        **kwargs,
+    ):
+        """Perform authenticated post request and return selected attribute of HTTP response
+
+        Args:
+            endpoint: Where to send the get request
+            params: Parameters to append to endpoint url
+            data: Body parameter / payload to send to endpoint
+            response_attribute: Which part of the HTTP response to return
+            model: If response_attribute is JSON, which class to instantiate
+            **kwargs: Additional arguments for model class constructor
+        """
+        response = requests.put(url=endpoint, headers=self.auth_headers, params=params, data=data)
         response.raise_for_status()
 
         # Return only parts of response that have been selected by response_attribute
