@@ -58,8 +58,13 @@ class BaseModel:
 
 @dataclass
 class Organization(BaseModel):
+    """Implements an :class:`Organization`"""
+
     def project(self, project_slug: str) -> "Project":
-        """Get the specified :class:`Project`
+        """Get a specific :class:`Project`
+
+        Args:
+            project_slug (str): The slug of the project to get
 
         Official API Docs:
             `GET /api/0/projects/{organization_slug}/{project_slug}/ <https://docs.sentry.io/api/projects/retrieve-a-project/>`_
@@ -77,7 +82,10 @@ class Organization(BaseModel):
         return self.transceiver.paginate_get(endpoint, model=Team, organization_slug=self.slug)
 
     def team(self, team_slug: str) -> "Team":
-        """Get the specified :class:`Team`
+        """Get a specific :class:`Team`
+
+        Args:
+            team_slug (str): The slug of the team to get
 
         Official API Docs:
             `GET /api/0/teams/{organization_slug}/{team_slug}/ <https://docs.sentry.io/api/teams/retrieve-a-team/>`_
@@ -86,10 +94,10 @@ class Organization(BaseModel):
         return self.transceiver.get(endpoint, model=Team, organization_slug=self.slug)
 
     def create_team(self, team_slug: str) -> "Team":
-        """Create an instance of :class:`Team`, send it to API, and return it
+        """Create a new :class:`Team`
 
         Args:
-            team_slug (str): The slug to assign to the team
+            team_slug (str): The slug of the team to create
 
         Official API Docs:
             `POST /api/0/organizations/{organization_slug}/teams/ <https://docs.sentry.io/api/teams/create-a-new-team/>`_
@@ -99,7 +107,7 @@ class Organization(BaseModel):
         return self.transceiver.post(endpoint, data=data, model=Team, organization_slug=self.slug)
 
     def issue(self, id: str) -> "Issue":
-        """Get the specified :class:`Issue`
+        """Get a specific :class:`Issue`
 
         Args:
             id (str): The ID of the issue to retrieve.
@@ -113,7 +121,7 @@ class Organization(BaseModel):
     def integrations(
         self, provider_key: Optional[str] = None, features: Optional[List[str]] = None
     ) -> Iterator["Integration"]:
-        """Get an iterator over all the available :class:`Integrations <Integration>` for an :class:`Organization`
+        """Get an iterator over all or specific :class:`Integrations <Integration>`
 
         Args:
             provider_key (str): Specific integration provider to filter by such as slack.
@@ -132,15 +140,19 @@ class Organization(BaseModel):
 
 @dataclass
 class Integration(BaseModel):
+    """Implements an :class:`Integration`"""
+
     pass
 
 
 @dataclass
 class Team(BaseModel):
+    """Implements a :class:`Team`"""
+
     organization_slug: str
 
     def delete(self):
-        """Mark :class:`Team` for deletion
+        """Delete this :class:`Team`
 
         Official API Docs:
             `DELETE /api/0/teams/{organization_slug}/{team_slug}/ <https://docs.sentry.io/api/teams/delete-a-team/>`_
@@ -151,6 +163,8 @@ class Team(BaseModel):
 
 @dataclass
 class Project(BaseModel):
+    """Implements a :class:`Project`"""
+
     class EventResolution(Enum):
         """Timespan to aggregate events counts
 
@@ -166,7 +180,7 @@ class Project(BaseModel):
         return self.organization["slug"]
 
     def issues(self, query: Optional[str] = "unresolved") -> Iterator["Issue"]:
-        """Get an iterator of all specified :class:`Issues <Issue>` in the :class:`Project`
+        """Get an iterator of all or specified :class:`Issues <Issue>` in the :class:`Project`
 
         Args:
             query (Optional[str]):
@@ -183,7 +197,7 @@ class Project(BaseModel):
         )
 
     def event_counts(self, resolution: Optional[EventResolution] = None) -> List:
-        """Returns project event counts
+        """Get event counts of project
 
         Sentry endpoint documentation: https://docs.sentry.io/api/projects/retrieve-event-counts-for-a-project/
 
@@ -197,7 +211,7 @@ class Project(BaseModel):
         return self.transceiver.get(endpoint, params=params)
 
     def tag_values(self, key: str) -> List[Dict]:
-        """Get a list of all used values of given tag
+        """Get all tag values of the project
 
         Args:
             key (str): The tag name to look up
@@ -222,7 +236,7 @@ class Project(BaseModel):
         has_seen: Optional[bool] = None,
         is_bookmarked: Optional[bool] = None,
     ) -> List:
-        """Bulk mutate various attributes on issues.
+        """Update attributes of multiple issues of a project
 
         If any IDs are out of scope this operation will succeed without any data mutation.
 
@@ -278,11 +292,22 @@ class Project(BaseModel):
 
 @dataclass
 class Issue(BaseModel):
+    """Implements an :class:`Issue`"""
+
     organization_slug: str
 
-    def events(self) -> Iterator["Event"]:
+    def events(self, full: bool = False) -> Iterator["Event"]:
+        """Get an iterator of all :class:`Events <Event>` of this :class:`Issue`
+
+        Args:
+            full (bool): If this is set to true then the event payload will include the full event body
+
+        Official API Docs:
+            `GET /api/0/organizations/{organization_slug}/issues/{issue_id}/events/ <https://docs.sentry.io/api/events/list-an-issues-events/>`_
+        """
         endpoint = f"https://sentry.io/api/0/organizations/{self.organization_slug}/issues/{self.id}/events/"
-        return self.transceiver.paginate_get(endpoint, model=Event)
+        params = {"full": full}
+        return self.transceiver.paginate_get(endpoint, params=params, model=Event)
 
     def update(
         self,
@@ -294,7 +319,7 @@ class Issue(BaseModel):
         is_subscribed: Optional[bool] = None,
         is_public: Optional[bool] = None,
     ) -> "Issue":
-        """Updates an individual issue's attributes.
+        """Update this issue
 
         Only the attributes submitted are modified.
 
@@ -339,6 +364,8 @@ class Issue(BaseModel):
 
 @dataclass
 class Event(BaseModel):
+    """Implements an :class:`Event`"""
+
     @property
     def tags(self):
         return {tag["key"]: tag["value"] for tag in self.json["tags"]}

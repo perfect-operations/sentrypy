@@ -10,6 +10,8 @@ Welcome to sentrypy's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   quickstart
+   overview
    reference
 
 
