@@ -36,13 +36,14 @@ pip install -e sentrypy
 ## Usage
 
 ```python
-from sentrypy.sentry import Sentry
+from sentrypy import Sentry
 
 # Connect to Sentry API
-sentry = Sentry(token="your_secret_token")
+sentry = Sentry(token="your-secret-token")
 
 # Retrieve a project
-project = sentry.project(organization_slug="your_org", project_slug="your_project")
+org = sentry.organization("your-org-slug")
+project = org.project("your-project-slug")
 
 # Inspect the issues
 for issue in project.issues():
